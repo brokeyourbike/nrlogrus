@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.1.2](https://www.github.com/brokeyourbike/nrlogrus/compare/v0.1.1...v0.1.2) (2023-05-08)
+
+
+### Bug Fixes
+
+* tidy ([8b3c431](https://www.github.com/brokeyourbike/nrlogrus/commit/8b3c4316364f6f068b7ef4f566bbf24c8526ad01))
+
 ### [0.1.1](https://www.github.com/brokeyourbike/nrlogrus/compare/v0.1.0...v0.1.1) (2023-05-08)
 
 
