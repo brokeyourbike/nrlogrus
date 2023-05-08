@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.1.1](https://www.github.com/brokeyourbike/nrlogrus/compare/v0.1.0...v0.1.1) (2023-05-08)
+
+
+### Bug Fixes
+
+* mod dependencies ([78f51cf](https://www.github.com/brokeyourbike/nrlogrus/commit/78f51cfa3e5b976d17bf7f15798d69a671996912))
+* update deps ([3e3af28](https://www.github.com/brokeyourbike/nrlogrus/commit/3e3af28849aad0d425ae6dba07582fb6dd295c5b))
+
 ## 0.1.0 (2022-11-11)
 
 
