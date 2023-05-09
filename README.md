@@ -35,3 +35,9 @@ log.SetFormatter(nrlogrus.NewFormatterFromEnvironment(&logrus.JSONFormatter{}))
 
 - [logcontext-v2/nrlogrus](https://pkg.go.dev/github.com/newrelic/go-agent/v3/integrations/logcontext-v2/nrlogrus)
 - [logcontext/nrlogrusplugin](https://pkg.go.dev/github.com/newrelic/go-agent/v3/integrations/logcontext/nrlogrusplugin)
+
+## Authors
+- [Ivan Stasiuk](https://github.com/brokeyourbike) | [Twitter](https://twitter.com/brokeyourbike) | [LinkedIn](https://www.linkedin.com/in/brokeyourbike) | [stasi.uk](https://stasi.uk)
+
+## License
+[Apache-2.0 License](https://github.com/glocurrency/nrlogrus/blob/main/LICENSE)
