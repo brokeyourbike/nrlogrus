@@ -3,53 +3,60 @@ package nrlogrus
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"io"
+	"os"
 	"testing"
-	"time"
 
+	"github.com/newrelic/go-agent/v3/integrations/logcontext"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
-var (
-	testAppName   = "app-name"
-	testTime      = time.Date(2014, time.November, 28, 1, 1, 0, 0, time.UTC)
-	matchAnything = struct{}{}
-)
+const appName = "my app"
 
-func newTestLogger(out io.Writer) *logrus.Logger {
+func newBenchmarkLogger(out io.Writer) *logrus.Logger {
 	l := logrus.New()
-	l.SetFormatter(NewFormatter(testAppName, &logrus.JSONFormatter{}))
+	l.SetFormatter(NewFormatter(appName, &logrus.JSONFormatter{}))
 	l.SetReportCaller(true)
 	l.SetOutput(out)
 	return l
 }
 
-func validateOutput(t *testing.T, out *bytes.Buffer, expected map[string]interface{}) {
-	var actual map[string]interface{}
+func newTestLogger(out io.Writer) (*logrus.Logger, *test.Hook) {
+	l, hook := test.NewNullLogger()
+	l.SetFormatter(NewFormatter(appName, &logrus.JSONFormatter{}))
+	l.SetReportCaller(true)
+	l.SetOutput(out)
+	return l, hook
+}
 
-	err := json.Unmarshal(out.Bytes(), &actual)
-	require.NoError(t, err)
+func TestNewFormatter(t *testing.T) {
+	formatter := NewFormatter(appName, &logrus.JSONFormatter{})
+	assert.Equal(t, appName, formatter.appName)
+}
 
-	for k, v := range expected {
-		found, ok := actual[k]
-		assert.Truef(t, ok, "key %s not found:\nactual=%s", k, actual)
+func TestNewFormatterFromEnvironment(t *testing.T) {
+	os.Setenv("NEW_RELIC_APP_NAME", "app-name-from-env")
 
-		if v != matchAnything && found != v {
-			t.Errorf("value for key %s is incorrect:\nactual=%s\nexpected=%s", k, found, v)
-		}
-	}
-	for k, v := range actual {
-		_, ok := expected[k]
-		assert.Truef(t, ok, "unexpected key found:\nkey=%s\nvalue=%s", k, v)
-	}
+	formatter := NewFormatterFromEnvironment(&logrus.JSONFormatter{})
+	assert.Equal(t, "app-name-from-env", formatter.appName)
+}
+
+func TestFormat(t *testing.T) {
+	out := bytes.NewBuffer([]byte{})
+	log, hook := newTestLogger(out)
+
+	log.Info("Hello World!")
+
+	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, appName, hook.LastEntry().Data[logcontext.KeyEntityName])
+	assert.Equal(t, "SERVICE", hook.LastEntry().Data[logcontext.KeyEntityType])
 }
 
 func BenchmarkRawJSONFormatter(b *testing.B) {
-	log := newTestLogger(bytes.NewBuffer([]byte("")))
+	log := newBenchmarkLogger(bytes.NewBuffer([]byte("")))
 	log.Formatter = new(logrus.JSONFormatter)
 	ctx := context.Background()
 
@@ -62,7 +69,7 @@ func BenchmarkRawJSONFormatter(b *testing.B) {
 }
 
 func BenchmarkRawTextFormatter(b *testing.B) {
-	log := newTestLogger(bytes.NewBuffer([]byte("")))
+	log := newBenchmarkLogger(bytes.NewBuffer([]byte("")))
 	log.Formatter = new(logrus.TextFormatter)
 	ctx := context.Background()
 
@@ -75,7 +82,7 @@ func BenchmarkRawTextFormatter(b *testing.B) {
 }
 
 func BenchmarkWithoutTransaction(b *testing.B) {
-	log := newTestLogger(bytes.NewBuffer([]byte("")))
+	log := newBenchmarkLogger(bytes.NewBuffer([]byte("")))
 	ctx := context.Background()
 
 	b.ResetTimer()
@@ -89,7 +96,7 @@ func BenchmarkWithoutTransaction(b *testing.B) {
 func BenchmarkWithTransaction(b *testing.B) {
 	app := &newrelic.Application{}
 	txn := app.StartTransaction("TestLogDistributedTracingDisabled")
-	log := newTestLogger(bytes.NewBuffer([]byte("")))
+	log := newBenchmarkLogger(bytes.NewBuffer([]byte("")))
 	ctx := newrelic.NewContext(context.Background(), txn)
 
 	b.ResetTimer()

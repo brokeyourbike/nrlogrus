@@ -16,6 +16,8 @@ type ContextFormatter struct {
 	formatter logrus.Formatter
 }
 
+// NewFormatter creates a new `logrus.Formatter` that will format logs for
+// sending to New Relic.
 func NewFormatter(appName string, formatter logrus.Formatter) ContextFormatter {
 	return ContextFormatter{
 		appName:   appName,
@@ -23,6 +25,9 @@ func NewFormatter(appName string, formatter logrus.Formatter) ContextFormatter {
 	}
 }
 
+// NewFormatterFromEnvironment creates a new `logrus.Formatter` that will
+// format logs for sending to New Relic.  The application name is read from
+// the `NEW_RELIC_APP_NAME` environment variable.
 func NewFormatterFromEnvironment(formatter logrus.Formatter) ContextFormatter {
 	return NewFormatter(os.Getenv("NEW_RELIC_APP_NAME"), formatter)
 }
