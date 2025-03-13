@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.1.4](https://www.github.com/brokeyourbike/nrlogrus/compare/v0.1.3...v0.1.4) (2025-03-13)
+
+
+### Bug Fixes
+
+* **deps:** bump golang.org/x/net from 0.23.0 to 0.36.0 ([#11](https://www.github.com/brokeyourbike/nrlogrus/issues/11)) ([e508b25](https://www.github.com/brokeyourbike/nrlogrus/commit/e508b256f17a181dc3d43ece0135837ea3b6f348))
+
 ### [0.1.3](https://www.github.com/brokeyourbike/nrlogrus/compare/v0.1.2...v0.1.3) (2023-05-09)
 
 
