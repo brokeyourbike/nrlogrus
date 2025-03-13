@@ -3,7 +3,7 @@
 {
 	"name": "nrlogrus",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/go:0-1.19",
+	"image": "mcr.microsoft.com/devcontainers/go:1.23",
 
 	// Configure tool-specific properties.
 	"customizations": {
